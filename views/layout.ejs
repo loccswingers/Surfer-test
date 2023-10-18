@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+	<meta property="og:title" content="shuttle" />
+	<meta property="og:description" content="shuttle, the fastest browser." />
+	<meta property="og:image" content="/shuttle.png" />
+	<meta name="theme-color" content="#000000" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="language" content="English" />
+    <script src="/assets/js/snow.js"></script>
+
+	<title>Shuttle</title>
+
+	<link rel="stylesheet" href="/assets/css/style.css" />
+
+	<script src="https://kit.fontawesome.com/be27c0ad9d.js" crossorigin="anonymous"></script>
+	<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+	<script src="/uv/uv.bundle.js"></script>
+	<script src="/uv/uv.config.js"></script>
+
+	<script src="/assets/js/index.js" defer></script>
+	<script src="/assets/js/particles.js" defer></script>
+	<script src="/assets/js/cursor.js" defer></script>
+
+	<%- include("ads-head") %>
+</head>
+<body>
+	<div class="sidebar">
+		<a href="/" id="logo">
+			<img src="shuttle.png" alt="Logo">
+		</a>
+<%- navItems.map(([to, name]) => `<a href="${to}"${to === path ? " class=\"active\"" : ""}><span>${name}</span></a>`).join("\n"); %>
+	</div>
+	<%- include(page); %>
+	<div class="glow-line"></div>
+</body>
+</html>
