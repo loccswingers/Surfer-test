@@ -1,10 +1,11 @@
 {
-  "name": "shuttle",
-  "version": "3.0.0",
-  "description": "Experience the global internet using Shuttle, the swiftest and most uncluttered proxy solution. Relish a heightened level of privacy during your online sessions, free from censorship.",
+  "name": "Youtube",
+  "version": "1.0.0",
+  "description": "Unblocker website w/ Ultraviolet",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -14,15 +15,18 @@
     "proxy"
   ],
   "author": "",
-  "license": " GPL-3.0-or-later",
-  "homepage": "https://shuttleproxy.com",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/shuttlenetwork/shuttle",
   "dependencies": {
     "@titaniumnetwork-dev/ultraviolet": "^1.0.5",
     "@tomphttp/bare-server-node": "^1.2.2",
-    "ejs": "^3.1.9",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "forever": "^4.0.3"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "16.x"
   }
 }

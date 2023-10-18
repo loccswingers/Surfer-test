@@ -1,56 +1,67 @@
-import createBareServer from "@tomphttp/bare-server-node";
-import { createServer } from "node:http";
-import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-import express from "express";
+import createBareServer from '@tomphttp/bare-server-node';
+import http from 'node:http';
+import fs from 'fs/promises';
+import { createRequire } from 'module';
+import express from 'express'; // Moved this line outside of the main function
+const require = createRequire(import.meta.url);
+const port = process.env.PORT || 80;
 
-// Request path to filename mappings
-const routes = {
-	"/": "index",
-	"/classes": "shuttleai",
-	"/science": "shuttletv",
-	"/math": "games",
-	"/settings": "settings"
-};
+async function main() {
+  // Create Bare
+  const bare = createBareServer('/bare/');
 
-const navItems = [
-	["/", "Home"],
-	["/classes", "ShuttleAI"],
-        ["/science", "ShuttleTV"],
-	["/math", "Games"],
-	["/settings", "Settings"]
-];
+  const app = express(); // Moved this line inside the main function
 
-const bare = createBareServer("/bare/");
-const app = express();
+  // Set up caching for static files
+  const cacheOptions = { maxAge: 86400000 }; // Cache static files for 1 day (in milliseconds)
+  app.use(express.static('./public', cacheOptions));
 
-app.set("view engine", "ejs")
+  // Use route handling middleware for Express
+  app.use((req, res, next) => {
+    const routes = {
+      '/': 'index.html',
+      '/games': 'games.html',
+      '/settings': 'settings.html',
+      '/apps': 'apps.html',
+      '/discord': 'discord.html',
+      '/chat': 'chat.html'
+    };
+    const filename = routes[req.path];
 
-app.use(express.static("./public"));
-app.use("/uv/", express.static(uvPath));
+    if (filename) {
+      res.sendFile(filename, { root: './html' });
+    } else {
+      next();
+    }
+  });
 
-for (const [path, page] of Object.entries(routes)) {
-	app.get(path, (_, res) => res.render("layout", {
-		path,
-		navItems,
-		page
-	}));
+  app.use((req, res) => {
+    res.status(404).sendFile('404.html', { root: './html' });
+  });
+
+  const httpServer = http.createServer();
+
+  httpServer.on('request', (req, res) => {
+    if (bare.shouldRoute(req)) {
+      bare.routeRequest(req, res);
+    } else {
+      app(req, res);
+    }
+  });
+
+  httpServer.on('error', (err) => console.log(err));
+  httpServer.on('upgrade', (req, socket, head) => {
+    if (bare.shouldRoute(req)) {
+      bare.routeUpgrade(req, socket, head);
+    } else {
+      socket.end();
+    }
+  });
+
+  httpServer.listen({ port: port }, () => {
+    console.log(`\x1b[42m\x1b[1m shuttle\n Port: ${port}\x1b[0m`);
+    console.log('\x1b[41m\x1b[5m\x1b[1m\x1b[33m PLEASE NOTE: Shuttle is in a development stage. Expect bugs!\x1b[0m');
+  });
 }
 
-app.use((_, res) => res.status(404).render("404"));
-
-const httpServer = createServer();
-
-httpServer.on("request", (req, res) => {
-	if (bare.shouldRoute(req)) bare.routeRequest(req, res); else app(req, res);
-});
-
-httpServer.on("error", (err) => console.log(err));
-httpServer.on("upgrade", (req, socket, head) => {
-	if (bare.shouldRoute(req)) bare.routeUpgrade(req, socket, head); else socket.end();
-});
-
-httpServer.listen({ port: process.env.PORT || 8080 }, () => {
-	const addr = httpServer.address();
-	console.log(`\x1b[42m\x1b[1m shuttle\n Port: ${addr.port}\x1b[0m`);
-	console.log("\x1b[41m\x1b[5m\x1b[1m\x1b[33m PLEASE NOTE: Shuttle is in a development stage. Expect bugs!\x1b[0m");
-});
+main().catch((error) => console.error('An error occurred:', error));
