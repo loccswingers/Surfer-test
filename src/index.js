@@ -1,5 +1,5 @@
 import { createBareServer } from "@tomphttp/bare-server-node";
-import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
+import { uvPath } from "@loccswingers/continuum-stg";
 import { gamesPath } from "@amethystnetwork-dev/incognito-gfiles";
 
 import { fileURLToPath } from "node:url";
@@ -33,7 +33,7 @@ app.use(serveStatic(fileURLToPath(new URL("../static/", import.meta.url))));
 app.use("/source", serveStatic(gamesPath));
 app.use("/source", serveIndex(gamesPath, { icons: true }));
 
-app.use("/uv/", serveStatic(uvPath));
+app.use("/conti/", serveStatic(uvPath));
 analytics(app);
 
 server.on("request", app);

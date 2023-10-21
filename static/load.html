@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
         -->
-    <script src="./uv/uv.bundle.js"></script>
-    <script src="./uv/uv.config.js"></script>
+    <script src="./conti/conti.bundle.js"></script>
+    <script src="./conti/conti.config.js"></script>
     <style>
         @font-face {
             font-family: 'Roboto';
@@ -93,8 +93,8 @@
             startpage: 'https://www.startpage.com/sp/search?query=%s'
         };
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistration("./uv.sw-handler.js").then(async worker => {
-                if(!worker) await navigator.serviceWorker.register('./uv.sw-handler.js', { scope: __uv$config.prefix });
+            navigator.serviceWorker.getRegistration("./conti.sw-handler.js").then(async worker => {
+                if(!worker) await navigator.serviceWorker.register('./conti.sw-handler.js', { scope: __uv$config.prefix });
                 let url = atob(decodeURIComponent(window.location.hash.slice(1)));
                 let search = engines[localStorage.getItem('incog||search') || 'google'];
                 if (url) {
